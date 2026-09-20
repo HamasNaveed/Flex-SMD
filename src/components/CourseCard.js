@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native';
 import Badge from './Badge';
 import Button from './Button';
+import { colors } from '../theme';
 
 // Reusable card for a course. Used both in the plain "My Courses" list and
 // in the Course Registration screen (where the register button is shown).
@@ -40,15 +41,12 @@ export default function CourseCard({ course, onRegister, isRegistered }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 14,
+    backgroundColor: colors.card,
+    borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   headerRow: {
     flexDirection: 'row',
@@ -59,21 +57,21 @@ const styles = StyleSheet.create({
   code: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#2b57d9',
+    color: colors.primary,
   },
   name: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1c2333',
+    color: colors.textPrimary,
   },
   section: {
     fontSize: 13,
-    color: '#6b7180',
+    color: colors.textSecondary,
     marginBottom: 4,
   },
   seats: {
     fontSize: 13,
-    color: '#33394a',
+    color: colors.textSecondary,
     marginBottom: 10,
   },
 });
