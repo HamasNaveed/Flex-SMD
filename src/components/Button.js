@@ -1,4 +1,5 @@
 import { Pressable, Text, StyleSheet } from 'react-native';
+import { colors } from '../theme';
 
 // Reusable pill button used across the app (mode toggle, screen switcher,
 // register action, form submit). Keeping one Button component instead of
@@ -26,29 +27,29 @@ const styles = StyleSheet.create({
   base: {
     paddingVertical: 10,
     paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: '#eef1f6',
+    borderRadius: 9999,
+    backgroundColor: colors.neutral,
     marginRight: 8,
     marginBottom: 8,
   },
   active: {
-    backgroundColor: '#2b57d9',
+    backgroundColor: colors.primary,
   },
   danger: {
-    backgroundColor: '#d92b2b',
+    backgroundColor: colors.danger,
   },
   disabled: {
-    backgroundColor: '#d9dde5',
+    backgroundColor: colors.disabled,
   },
   text: {
-    color: '#33394a',
+    color: colors.textSecondary,
     fontWeight: '600',
     fontSize: 14,
   },
   textActive: {
-    color: '#ffffff',
+    color: colors.textOnPrimary,
   },
   textDisabled: {
-    color: '#8a8f9c',
+    color: colors.textDisabled,
   },
 });

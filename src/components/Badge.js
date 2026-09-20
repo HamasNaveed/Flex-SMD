@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native';
+import { colors } from '../theme';
 
 // Small colored status pill, reused for Active/Expired assignments and
 // Full/Open courses so the color-coding stays consistent everywhere.
 const COLORS = {
-  green: { bg: '#e3f7e9', text: '#1c8a45' },
-  red: { bg: '#fce8e8', text: '#c62828' },
-  gray: { bg: '#eceef2', text: '#5a6072' },
+  green: { bg: colors.successBg, text: colors.success },
+  red: { bg: colors.dangerBg, text: colors.danger },
+  gray: { bg: colors.neutral, text: colors.textSecondary },
 };
 
 export default function Badge({ label, color = 'gray' }) {
@@ -21,7 +22,7 @@ const styles = StyleSheet.create({
   badge: {
     paddingVertical: 4,
     paddingHorizontal: 10,
-    borderRadius: 12,
+    borderRadius: 9999,
     alignSelf: 'flex-start',
   },
   text: {
