@@ -25,14 +25,45 @@ function validate({ courseId, title, deadline }) {
   return errors;
 }
 
-// Teacher's only action for this assignment: add a new assignment. This is
-// the app's one real form, with required-field and date-format validation.
-export default function TeacherScreen({ courses, assignments, onAddAssignment }) {
+function validateCourse({ code, name, section, totalSeats }, courses) {
+  const errors = {};
+
+  if (!code.trim()) {
+    errors.code = 'Course code is required.';
+  } else if (courses.some((c) => c.code.toLowerCase() === code.trim().toLowerCase())) {
+    errors.code = 'A course with this code already exists.';
+  }
+  if (!name.trim()) {
+    errors.name = 'Course name is required.';
+  }
+  if (!section.trim()) {
+    errors.section = 'Section is required.';
+  }
+  if (!totalSeats.trim()) {
+    errors.totalSeats = 'Total seats is required.';
+  } else if (!/^\d+$/.test(totalSeats.trim()) || Number(totalSeats) <= 0) {
+    errors.totalSeats = 'Total seats must be a positive number.';
+  }
+
+  return errors;
+}
+
+// Teacher/admin actions for this assignment: add a new assignment, and
+// manage the course catalog (add/remove courses). This is the app's one
+// real form, with required-field and date-format validation.
+export default function TeacherScreen({ courses, assignments, onAddAssignment, onAddCourse, onRemoveCourse }) {
   const [courseId, setCourseId] = useState(null);
   const [title, setTitle] = useState('');
   const [deadline, setDeadline] = useState('');
   const [errors, setErrors] = useState({});
   const [confirmation, setConfirmation] = useState('');
+
+  const [courseCode, setCourseCode] = useState('');
+  const [courseName, setCourseName] = useState('');
+  const [courseSection, setCourseSection] = useState('');
+  const [totalSeats, setTotalSeats] = useState('');
+  const [courseErrors, setCourseErrors] = useState({});
+  const [courseConfirmation, setCourseConfirmation] = useState('');
 
   const courseLabel = (id) => {
     const course = courses.find((c) => c.id === id);
@@ -55,8 +86,94 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment })
     setConfirmation('Assignment added.');
   };
 
+  const handleAddCourse = () => {
+    const fieldErrors = validateCourse(
+      { code: courseCode, name: courseName, section: courseSection, totalSeats },
+      courses
+    );
+    setCourseErrors(fieldErrors);
+    setCourseConfirmation('');
+
+    if (Object.keys(fieldErrors).length > 0) {
+      return;
+    }
+
+    const seats = Number(totalSeats);
+    onAddCourse({
+      id: courseCode.trim().toLowerCase(),
+      code: courseCode.trim().toUpperCase(),
+      name: courseName.trim(),
+      section: courseSection.trim(),
+      totalSeats: seats,
+      availableSeats: seats,
+    });
+    setCourseCode('');
+    setCourseName('');
+    setCourseSection('');
+    setTotalSeats('');
+    setCourseConfirmation('Course added.');
+  };
+
   return (
     <View style={styles.container}>
+      <Text style={styles.heading}>Manage Courses</Text>
+
+      <Text style={styles.label}>Course Code</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g. CS1234"
+        value={courseCode}
+        onChangeText={setCourseCode}
+      />
+      {courseErrors.code && <Text style={styles.error}>{courseErrors.code}</Text>}
+
+      <Text style={styles.label}>Course Name</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g. Data Structures"
+        value={courseName}
+        onChangeText={setCourseName}
+      />
+      {courseErrors.name && <Text style={styles.error}>{courseErrors.name}</Text>}
+
+      <Text style={styles.label}>Section</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g. BSE-7A"
+        value={courseSection}
+        onChangeText={setCourseSection}
+      />
+      {courseErrors.section && <Text style={styles.error}>{courseErrors.section}</Text>}
+
+      <Text style={styles.label}>Total Seats</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g. 40"
+        value={totalSeats}
+        onChangeText={setTotalSeats}
+        keyboardType="numeric"
+      />
+      {courseErrors.totalSeats && <Text style={styles.error}>{courseErrors.totalSeats}</Text>}
+
+      {courseConfirmation !== '' && <Text style={styles.confirmation}>{courseConfirmation}</Text>}
+
+      <Button title="Add Course" onPress={handleAddCourse} active />
+
+      <FlatList
+        data={courses}
+        keyExtractor={(item) => item.id}
+        scrollEnabled={false}
+        renderItem={({ item }) => (
+          <View style={styles.courseRow}>
+            <Text style={styles.courseRowText}>
+              {item.code} - {item.name} ({item.section})
+            </Text>
+            <Button title="Remove" variant="danger" onPress={() => onRemoveCourse(item.id)} />
+          </View>
+        )}
+        ListEmptyComponent={<Text style={styles.empty}>No courses yet.</Text>}
+      />
+
       <Text style={styles.heading}>Add Assignment</Text>
 
       <Text style={styles.label}>Course</Text>
@@ -119,6 +236,22 @@ const styles = StyleSheet.create({
   },
   listHeading: {
     marginTop: 20,
+  },
+  courseRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    marginBottom: 8,
+  },
+  courseRowText: {
+    flex: 1,
+    color: '#1c2333',
+    fontSize: 13,
+    marginRight: 10,
   },
   label: {
     fontSize: 13,

@@ -27,6 +27,9 @@ export default function App() {
   const [registeredCourseIds, setRegisteredCourseIds] = useState([]);
 
   const handleRegister = (courseId) => {
+    if (registeredCourseIds.includes(courseId)) {
+      return;
+    }
     setCourses((prev) =>
       prev.map((course) =>
         course.id === courseId && course.availableSeats > 0
@@ -39,6 +42,16 @@ export default function App() {
 
   const handleAddAssignment = (assignment) => {
     setAssignments((prev) => [...prev, assignment]);
+  };
+
+  const handleAddCourse = (course) => {
+    setCourses((prev) => [...prev, course]);
+  };
+
+  const handleRemoveCourse = (courseId) => {
+    setCourses((prev) => prev.filter((course) => course.id !== courseId));
+    setAssignments((prev) => prev.filter((assignment) => assignment.courseId !== courseId));
+    setRegisteredCourseIds((prev) => prev.filter((id) => id !== courseId));
   };
 
   return (
@@ -87,6 +100,8 @@ export default function App() {
             courses={courses}
             assignments={assignments}
             onAddAssignment={handleAddAssignment}
+            onAddCourse={handleAddCourse}
+            onRemoveCourse={handleRemoveCourse}
           />
         )}
       </View>
