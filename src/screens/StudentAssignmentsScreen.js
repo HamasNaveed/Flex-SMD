@@ -1,5 +1,6 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import AssignmentCard from '../components/AssignmentCard';
+import { colors } from '../theme';
 
 // Lists every assignment with its Active/Expired status. Assignments are
 // sorted so the soonest deadlines show first, and an empty state is shown
@@ -36,11 +37,11 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1c2333',
+    color: colors.textPrimary,
     marginBottom: 12,
   },
   empty: {
-    color: '#6b7180',
+    color: colors.textSecondary,
     textAlign: 'center',
     marginTop: 20,
   },

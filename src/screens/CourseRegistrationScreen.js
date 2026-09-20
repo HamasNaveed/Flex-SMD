@@ -1,5 +1,6 @@
 import { View, Text, FlatList, StyleSheet } from 'react-native';
 import CourseCard from '../components/CourseCard';
+import { colors } from '../theme';
 
 // Lets a student register for a course. Registering decrements the shared
 // availableSeats count so the Full/seats-left state updates everywhere the
@@ -31,11 +32,11 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1c2333',
+    color: colors.textPrimary,
     marginBottom: 12,
   },
   empty: {
-    color: '#6b7180',
+    color: colors.textSecondary,
     textAlign: 'center',
     marginTop: 20,
   },

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
 import Button from '../components/Button';
 import AssignmentCard from '../components/AssignmentCard';
+import { colors } from '../theme';
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1c2333',
+    color: colors.textPrimary,
     marginBottom: 12,
   },
   listHeading: {
@@ -241,22 +242,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.card,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   courseRowText: {
     flex: 1,
-    color: '#1c2333',
+    color: colors.textPrimary,
     fontSize: 13,
     marginRight: 10,
   },
   label: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6b7180',
+    color: colors.textSecondary,
     marginBottom: 6,
   },
   row: {
@@ -264,27 +267,27 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   input: {
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.card,
     borderRadius: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
     marginBottom: 6,
     borderWidth: 1,
-    borderColor: '#dfe3ea',
+    borderColor: colors.border,
   },
   error: {
-    color: '#c62828',
+    color: colors.danger,
     fontSize: 12,
     marginBottom: 10,
   },
   confirmation: {
-    color: '#1c8a45',
+    color: colors.success,
     fontSize: 13,
     fontWeight: '600',
     marginBottom: 10,
   },
   empty: {
-    color: '#6b7180',
+    color: colors.textSecondary,
     textAlign: 'center',
     marginTop: 20,
   },

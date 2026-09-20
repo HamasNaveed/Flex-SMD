@@ -1,14 +1,15 @@
 import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { BarChart, PieChart } from 'react-native-chart-kit';
+import { colors } from '../theme';
 
 const screenWidth = Dimensions.get('window').width - 32;
 
 const chartConfig = {
-  backgroundGradientFrom: '#ffffff',
-  backgroundGradientTo: '#ffffff',
+  backgroundGradientFrom: colors.card,
+  backgroundGradientTo: colors.card,
   decimalPlaces: 0,
-  color: (opacity = 1) => `rgba(43, 87, 217, ${opacity})`,
-  labelColor: (opacity = 1) => `rgba(51, 57, 74, ${opacity})`,
+  color: (opacity = 1) => `rgba(59, 82, 232, ${opacity})`,
+  labelColor: (opacity = 1) => `rgba(15, 23, 42, ${opacity})`,
   barPercentage: 0.6,
 };
 
@@ -29,15 +30,15 @@ export default function AttendanceDashboardScreen({ attendance, courses }) {
     {
       name: 'Present',
       population: totalPresent,
-      color: '#2b57d9',
-      legendFontColor: '#33394a',
+      color: colors.primary,
+      legendFontColor: colors.textPrimary,
       legendFontSize: 13,
     },
     {
       name: 'Absent',
       population: totalAbsent,
-      color: '#d92b2b',
-      legendFontColor: '#33394a',
+      color: colors.danger,
+      legendFontColor: colors.textPrimary,
       legendFontSize: 13,
     },
   ];
@@ -79,13 +80,13 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1c2333',
+    color: colors.textPrimary,
     marginBottom: 12,
   },
   chartTitle: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#33394a',
+    color: colors.textPrimary,
     marginBottom: 8,
     marginTop: 8,
   },
