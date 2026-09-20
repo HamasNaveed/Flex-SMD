@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TextInput, ScrollView, StyleSheet } from 'react-native';
 import Button from '../components/Button';
 import AssignmentCard from '../components/AssignmentCard';
 import { colors } from '../theme';
@@ -122,7 +122,7 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.heading}>Manage Courses</Text>
 
       <Text style={styles.label}>Course Code</Text>
@@ -175,22 +175,20 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
 
       <Button title="Add Course" onPress={handleAddCourse} active />
 
-      <FlatList
-        data={courses}
-        keyExtractor={(item) => item.id}
-        scrollEnabled={false}
-        renderItem={({ item }) => (
-          <View style={styles.courseRow}>
+      {courses.length === 0 ? (
+        <Text style={styles.empty}>No courses yet.</Text>
+      ) : (
+        courses.map((item) => (
+          <View key={item.id} style={styles.courseRow}>
             <Text style={styles.courseRowText}>
               {item.code} - {item.name} ({item.section}) · {item.teacher}
             </Text>
             <Button title="Remove" variant="danger" onPress={() => onRemoveCourse(item.id)} />
           </View>
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No courses yet.</Text>}
-      />
+        ))
+      )}
 
-      <Text style={styles.heading}>Add Assignment</Text>
+      <Text style={[styles.heading, styles.listHeading]}>Add Assignment</Text>
 
       <Text style={styles.label}>Course</Text>
       <View style={styles.row}>
@@ -228,21 +226,27 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
       <Button title="Add Assignment" onPress={handleSubmit} active />
 
       <Text style={[styles.heading, styles.listHeading]}>Assignments You've Added</Text>
-      <FlatList
-        data={assignments}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
-          <AssignmentCard assignment={item} courseLabel={courseLabel(item.courseId)} />
-        )}
-        ListEmptyComponent={<Text style={styles.empty}>No assignments yet.</Text>}
-      />
-    </View>
+      {assignments.length === 0 ? (
+        <Text style={styles.empty}>No assignments yet.</Text>
+      ) : (
+        assignments.map((item) => (
+          <AssignmentCard
+            key={item.id}
+            assignment={item}
+            courseLabel={courseLabel(item.courseId)}
+          />
+        ))
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    paddingBottom: 24,
   },
   heading: {
     fontSize: 20,
