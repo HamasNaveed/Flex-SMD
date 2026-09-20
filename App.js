@@ -3,6 +3,8 @@ import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import Button from './src/components/Button';
+import Logo from './src/components/Logo';
+import { colors } from './src/theme';
 import StudentCoursesScreen from './src/screens/StudentCoursesScreen';
 import StudentAssignmentsScreen from './src/screens/StudentAssignmentsScreen';
 import AttendanceDashboardScreen from './src/screens/AttendanceDashboardScreen';
@@ -59,7 +61,10 @@ export default function App() {
       <StatusBar style="auto" />
 
       <View style={styles.header}>
-        <Text style={styles.title}>Flex</Text>
+        <View style={styles.brandRow}>
+          <Logo size={28} />
+          <Text style={styles.title}>Flex</Text>
+        </View>
         <View style={styles.row}>
           <Button title="Student" active={mode === 'student'} onPress={() => setMode('student')} />
           <Button title="Teacher" active={mode === 'teacher'} onPress={() => setMode('teacher')} />
@@ -112,17 +117,22 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f4f6fb',
+    backgroundColor: colors.background,
   },
   header: {
     paddingHorizontal: 16,
     paddingTop: 12,
   },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
   title: {
     fontSize: 26,
     fontWeight: '800',
-    color: '#1c2333',
-    marginBottom: 8,
+    color: colors.textPrimary,
   },
   row: {
     flexDirection: 'row',
