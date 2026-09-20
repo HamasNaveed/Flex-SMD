@@ -11,7 +11,9 @@ import AttendanceDashboardScreen from './src/screens/AttendanceDashboardScreen';
 import CourseRegistrationScreen from './src/screens/CourseRegistrationScreen';
 import TeacherScreen from './src/screens/TeacherScreen';
 
-import { courses as initialCourses, initialAssignments, attendance } from './src/data';
+import { courses as initialCourses, initialAssignments, attendance, substituteTeachers } from './src/data';
+
+const TEACHER_CHANGE_THRESHOLD = 0.8;
 
 const STUDENT_SCREENS = [
   { key: 'courses', label: 'My Courses' },
@@ -27,6 +29,8 @@ export default function App() {
   const [courses, setCourses] = useState(initialCourses);
   const [assignments, setAssignments] = useState(initialAssignments);
   const [registeredCourseIds, setRegisteredCourseIds] = useState([]);
+  const [teacherVotes, setTeacherVotes] = useState({});
+  const [votedTeacherCourseIds, setVotedTeacherCourseIds] = useState([]);
 
   const handleRegister = (courseId) => {
     if (registeredCourseIds.includes(courseId)) {
@@ -40,6 +44,28 @@ export default function App() {
       )
     );
     setRegisteredCourseIds((prev) => [...prev, courseId]);
+  };
+
+  const handleVoteTeacher = (courseId) => {
+    if (votedTeacherCourseIds.includes(courseId)) {
+      return;
+    }
+    setVotedTeacherCourseIds((prev) => [...prev, courseId]);
+    setTeacherVotes((prev) => {
+      const newVoteCount = (prev[courseId] || 0) + 1;
+      const course = courses.find((c) => c.id === courseId);
+      const enrolledCount = course ? course.totalSeats - course.availableSeats : 0;
+      const nextTeacher = substituteTeachers[courseId];
+
+      if (enrolledCount > 0 && nextTeacher && newVoteCount / enrolledCount >= TEACHER_CHANGE_THRESHOLD) {
+        setCourses((prevCourses) =>
+          prevCourses.map((c) => (c.id === courseId ? { ...c, teacher: nextTeacher } : c))
+        );
+        return { ...prev, [courseId]: 0 };
+      }
+
+      return { ...prev, [courseId]: newVoteCount };
+    });
   };
 
   const handleAddAssignment = (assignment) => {
@@ -85,7 +111,14 @@ export default function App() {
               ))}
             </View>
 
-            {studentScreen === 'courses' && <StudentCoursesScreen courses={courses} />}
+            {studentScreen === 'courses' && (
+              <StudentCoursesScreen
+                courses={courses}
+                teacherVotes={teacherVotes}
+                votedTeacherCourseIds={votedTeacherCourseIds}
+                onVoteTeacher={handleVoteTeacher}
+              />
+            )}
             {studentScreen === 'assignments' && (
               <StudentAssignmentsScreen assignments={assignments} courses={courses} />
             )}
