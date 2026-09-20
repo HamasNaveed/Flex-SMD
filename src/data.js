@@ -7,6 +7,7 @@ export const courses = [
     code: 'AI4009',
     name: 'Generative AI',
     section: 'BSE-7B',
+    teacher: 'Dr. Tariq Malik',
     totalSeats: 40,
     availableSeats: 12,
   },
@@ -15,6 +16,7 @@ export const courses = [
     code: 'CS3002',
     name: 'Information Security',
     section: 'BSE-7A',
+    teacher: 'Prof. Nadia Vance',
     totalSeats: 45,
     availableSeats: 0,
   },
@@ -23,6 +25,7 @@ export const courses = [
     code: 'CS3006',
     name: 'Parallel and Distributed Computing',
     section: 'BSE-7A',
+    teacher: 'Dr. Usman Qazi',
     totalSeats: 40,
     availableSeats: 5,
   },
@@ -31,6 +34,7 @@ export const courses = [
     code: 'CS4039',
     name: 'Software for Mobile Devices',
     section: 'BSE-7A',
+    teacher: 'Engr. Sana Fatima',
     totalSeats: 50,
     availableSeats: 20,
   },
@@ -39,10 +43,24 @@ export const courses = [
     code: 'SE4091',
     name: 'Final Year Project - I',
     section: 'BSE-7A',
+    teacher: 'Dean R. Sterling',
     totalSeats: 35,
     availableSeats: 8,
   },
 ];
+
+// Pool of substitute teachers assigned when a course's students vote to
+// replace their current instructor (see the teacher-change vote feature).
+export const substituteTeachers = {
+  ai4009: 'Dr. Ayesha Khan',
+  cs3002: 'Dr. Bilal Ahmed',
+  cs3006: 'Dr. Sana Malik',
+  cs4039: 'Dr. Omar Farooq',
+  se4091: 'Dr. Hina Siddiqui',
+};
+
+// Hardcoded GPA for the single student this demo app represents.
+export const studentGpa = 3.7;
 
 export const initialAssignments = [
   {

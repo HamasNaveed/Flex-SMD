@@ -26,7 +26,7 @@ function validate({ courseId, title, deadline }) {
   return errors;
 }
 
-function validateCourse({ code, name, section, totalSeats }, courses) {
+function validateCourse({ code, name, section, teacher, totalSeats }, courses) {
   const errors = {};
 
   if (!code.trim()) {
@@ -39,6 +39,9 @@ function validateCourse({ code, name, section, totalSeats }, courses) {
   }
   if (!section.trim()) {
     errors.section = 'Section is required.';
+  }
+  if (!teacher.trim()) {
+    errors.teacher = 'Teacher name is required.';
   }
   if (!totalSeats.trim()) {
     errors.totalSeats = 'Total seats is required.';
@@ -62,6 +65,7 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
   const [courseCode, setCourseCode] = useState('');
   const [courseName, setCourseName] = useState('');
   const [courseSection, setCourseSection] = useState('');
+  const [courseTeacher, setCourseTeacher] = useState('');
   const [totalSeats, setTotalSeats] = useState('');
   const [courseErrors, setCourseErrors] = useState({});
   const [courseConfirmation, setCourseConfirmation] = useState('');
@@ -89,7 +93,7 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
 
   const handleAddCourse = () => {
     const fieldErrors = validateCourse(
-      { code: courseCode, name: courseName, section: courseSection, totalSeats },
+      { code: courseCode, name: courseName, section: courseSection, teacher: courseTeacher, totalSeats },
       courses
     );
     setCourseErrors(fieldErrors);
@@ -105,12 +109,14 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
       code: courseCode.trim().toUpperCase(),
       name: courseName.trim(),
       section: courseSection.trim(),
+      teacher: courseTeacher.trim(),
       totalSeats: seats,
       availableSeats: seats,
     });
     setCourseCode('');
     setCourseName('');
     setCourseSection('');
+    setCourseTeacher('');
     setTotalSeats('');
     setCourseConfirmation('Course added.');
   };
@@ -146,6 +152,15 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
       />
       {courseErrors.section && <Text style={styles.error}>{courseErrors.section}</Text>}
 
+      <Text style={styles.label}>Teacher</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g. Dr. Jane Doe"
+        value={courseTeacher}
+        onChangeText={setCourseTeacher}
+      />
+      {courseErrors.teacher && <Text style={styles.error}>{courseErrors.teacher}</Text>}
+
       <Text style={styles.label}>Total Seats</Text>
       <TextInput
         style={styles.input}
@@ -167,7 +182,7 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
         renderItem={({ item }) => (
           <View style={styles.courseRow}>
             <Text style={styles.courseRowText}>
-              {item.code} - {item.name} ({item.section})
+              {item.code} - {item.name} ({item.section}) · {item.teacher}
             </Text>
             <Button title="Remove" variant="danger" onPress={() => onRemoveCourse(item.id)} />
           </View>
