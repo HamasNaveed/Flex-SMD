@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SafeAreaView, View, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, View, Text, StyleSheet, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 
 import Button from './src/components/Button';
@@ -83,73 +83,82 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="auto" />
+    <View style={styles.page}>
+      <SafeAreaView style={styles.safeArea}>
+        <StatusBar style="auto" />
 
-      <View style={styles.header}>
-        <View style={styles.brandRow}>
-          <Logo size={28} />
-          <Text style={styles.title}>Flex</Text>
+        <View style={styles.header}>
+          <View style={styles.brandRow}>
+            <Logo size={28} />
+            <Text style={styles.title}>Flex</Text>
+          </View>
+          <View style={styles.row}>
+            <Button title="Student" active={mode === 'student'} onPress={() => setMode('student')} />
+            <Button title="Teacher" active={mode === 'teacher'} onPress={() => setMode('teacher')} />
+          </View>
         </View>
-        <View style={styles.row}>
-          <Button title="Student" active={mode === 'student'} onPress={() => setMode('student')} />
-          <Button title="Teacher" active={mode === 'teacher'} onPress={() => setMode('teacher')} />
-        </View>
-      </View>
 
-      <View style={styles.content}>
-        {mode === 'student' ? (
-          <>
-            <View style={styles.row}>
-              {STUDENT_SCREENS.map((screen) => (
-                <Button
-                  key={screen.key}
-                  title={screen.label}
-                  active={studentScreen === screen.key}
-                  onPress={() => setStudentScreen(screen.key)}
+        <View style={styles.content}>
+          {mode === 'student' ? (
+            <>
+              <View style={styles.row}>
+                {STUDENT_SCREENS.map((screen) => (
+                  <Button
+                    key={screen.key}
+                    title={screen.label}
+                    active={studentScreen === screen.key}
+                    onPress={() => setStudentScreen(screen.key)}
+                  />
+                ))}
+              </View>
+
+              {studentScreen === 'courses' && (
+                <StudentCoursesScreen
+                  courses={courses}
+                  teacherVotes={teacherVotes}
+                  votedTeacherCourseIds={votedTeacherCourseIds}
+                  onVoteTeacher={handleVoteTeacher}
                 />
-              ))}
-            </View>
-
-            {studentScreen === 'courses' && (
-              <StudentCoursesScreen
-                courses={courses}
-                teacherVotes={teacherVotes}
-                votedTeacherCourseIds={votedTeacherCourseIds}
-                onVoteTeacher={handleVoteTeacher}
-              />
-            )}
-            {studentScreen === 'assignments' && (
-              <StudentAssignmentsScreen assignments={assignments} courses={courses} />
-            )}
-            {studentScreen === 'attendance' && (
-              <AttendanceDashboardScreen attendance={attendance} courses={courses} />
-            )}
-            {studentScreen === 'registration' && (
-              <CourseRegistrationScreen
-                courses={courses}
-                registeredCourseIds={registeredCourseIds}
-                onRegister={handleRegister}
-              />
-            )}
-          </>
-        ) : (
-          <TeacherScreen
-            courses={courses}
-            assignments={assignments}
-            onAddAssignment={handleAddAssignment}
-            onAddCourse={handleAddCourse}
-            onRemoveCourse={handleRemoveCourse}
-          />
-        )}
-      </View>
-    </SafeAreaView>
+              )}
+              {studentScreen === 'assignments' && (
+                <StudentAssignmentsScreen assignments={assignments} courses={courses} />
+              )}
+              {studentScreen === 'attendance' && (
+                <AttendanceDashboardScreen attendance={attendance} courses={courses} />
+              )}
+              {studentScreen === 'registration' && (
+                <CourseRegistrationScreen
+                  courses={courses}
+                  registeredCourseIds={registeredCourseIds}
+                  onRegister={handleRegister}
+                />
+              )}
+            </>
+          ) : (
+            <TeacherScreen
+              courses={courses}
+              assignments={assignments}
+              onAddAssignment={handleAddAssignment}
+              onAddCourse={handleAddCourse}
+              onRemoveCourse={handleRemoveCourse}
+            />
+          )}
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  page: {
+    flex: 1,
+    backgroundColor: Platform.OS === 'web' ? '#e2e8f0' : colors.background,
+    alignItems: 'center',
+  },
   safeArea: {
     flex: 1,
+    width: '100%',
+    maxWidth: Platform.OS === 'web' ? 480 : undefined,
     backgroundColor: colors.background,
   },
   header: {
