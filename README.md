@@ -16,23 +16,34 @@ The app has a single toggle at the top switching between two modes (plain state 
 conditional rendering — no navigation library, no side/bottom bars):
 
 - **Student** — four sections switched with buttons at the top:
-  - **My Courses** — the 5 offered subjects with section and seat info.
-  - **Assignments** — every assignment, sorted by deadline, with an Active/Expired badge.
+  - **My Courses** — the 5 offered subjects with section and seat info. Tapping a
+    course card opens its attendance breakdown (see below).
+  - **Assignments** — every assignment, sorted by deadline, with an Active/Expired
+    badge. Each assignment has a submission box: paste a link (Google Docs, GitHub,
+    etc.) and submit; the link is validated and, once submitted, replaces the input
+    with a "Submitted: ..." line so you can't resubmit.
   - **Attendance** — a dashboard (`react-native-chart-kit`) with a bar chart of
-    per-subject attendance % and a pie chart of overall present vs. absent sessions.
+    per-subject attendance % and a pie chart of overall present vs. absent sessions,
+    plus a row of tappable subject chips (red if under 80% attendance, green
+    otherwise) that open the same per-course detail screen as My Courses.
   - **Registration** — register for a course; seats decrease live, and a course shows
-    **Full** once `availableSeats` reaches 0.
-- **Teacher** — one form to add a new assignment (course, title, deadline), with
-  required-field and date-format validation and inline error messages. New assignments
-  immediately show up in the Student → Assignments screen, since both modes read from
-  the same shared state in `App.js`.
+    **Full** once `availableSeats` reaches 0. Already-registered courses show a
+    "Registered" badge instead of the button, so a course can't be registered twice.
+  - **Course attendance detail** (opened by tapping a course, from either My Courses
+    or the Attendance dashboard) — present vs. absent as two colored bars, red when
+    attendance is below 80%, green otherwise, with a warning line below the threshold.
+- **Teacher** — manage courses, add assignments (course, title, deadline) with
+  required-field and date-format validation, **edit an existing assignment's
+  deadline** inline, and **see the student's submission link**, if any, under each
+  assignment. New/edited assignments immediately show up in the Student →
+  Assignments screen, since both modes read from the same shared state in `App.js`.
 
 ## Data
 
 All data is hardcoded in `src/data.js` as plain arrays/objects (`courses`,
 `initialAssignments`, `attendance`) — no backend, no database, per the assignment
-scope. Registrations and newly added assignments are kept in React state in `App.js`
-and passed down as props.
+scope. Registrations, newly added/edited assignments, and submission links are kept
+in React state in `App.js` and passed down as props.
 
 ## Project structure
 
@@ -44,11 +55,13 @@ src/
     Button.js              reusable pill button (mode toggle, screen switch, form submit)
     Badge.js                colored status pill (Active/Expired/Full/seats-left)
     CourseCard.js           course info card, optionally with a Register button
-    AssignmentCard.js       assignment info card with computed Active/Expired badge
+    AssignmentCard.js       assignment card: Active/Expired badge, student link
+                            submission, teacher deadline edit + submission view
   screens/
     StudentCoursesScreen.js
     StudentAssignmentsScreen.js
     AttendanceDashboardScreen.js
+    CourseAttendanceScreen.js  per-course present/absent detail, red if < 80%
     CourseRegistrationScreen.js
     TeacherScreen.js
 ```
