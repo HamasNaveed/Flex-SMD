@@ -5,7 +5,7 @@ import { colors } from '../theme';
 // Lists every assignment with its Active/Expired status. Assignments are
 // sorted so the soonest deadlines show first, and an empty state is shown
 // if a teacher hasn't added anything yet.
-export default function StudentAssignmentsScreen({ assignments, courses }) {
+export default function StudentAssignmentsScreen({ assignments, courses, onSubmitLink }) {
   const sorted = [...assignments].sort(
     (a, b) => new Date(a.deadline) - new Date(b.deadline)
   );
@@ -22,7 +22,11 @@ export default function StudentAssignmentsScreen({ assignments, courses }) {
         data={sorted}
         keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => (
-          <AssignmentCard assignment={item} courseLabel={courseLabel(item.courseId)} />
+          <AssignmentCard
+            assignment={item}
+            courseLabel={courseLabel(item.courseId)}
+            onSubmitLink={(link) => onSubmitLink(item.id, link)}
+          />
         )}
         ListEmptyComponent={<Text style={styles.empty}>No assignments yet.</Text>}
       />

@@ -10,6 +10,7 @@ import StudentAssignmentsScreen from './src/screens/StudentAssignmentsScreen';
 import AttendanceDashboardScreen from './src/screens/AttendanceDashboardScreen';
 import CourseRegistrationScreen from './src/screens/CourseRegistrationScreen';
 import TeacherScreen from './src/screens/TeacherScreen';
+import CourseAttendanceScreen from './src/screens/CourseAttendanceScreen';
 
 import { courses as initialCourses, initialAssignments, attendance, substituteTeachers } from './src/data';
 
@@ -31,6 +32,7 @@ export default function App() {
   const [registeredCourseIds, setRegisteredCourseIds] = useState([]);
   const [teacherVotes, setTeacherVotes] = useState({});
   const [votedTeacherCourseIds, setVotedTeacherCourseIds] = useState([]);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
 
   const handleRegister = (courseId) => {
     if (registeredCourseIds.includes(courseId)) {
@@ -72,6 +74,18 @@ export default function App() {
     setAssignments((prev) => [...prev, assignment]);
   };
 
+  const handleSubmitLink = (assignmentId, submissionLink) => {
+    setAssignments((prev) =>
+      prev.map((a) => (a.id === assignmentId ? { ...a, submissionLink } : a))
+    );
+  };
+
+  const handleEditDeadline = (assignmentId, deadline) => {
+    setAssignments((prev) =>
+      prev.map((a) => (a.id === assignmentId ? { ...a, deadline } : a))
+    );
+  };
+
   const handleAddCourse = (course) => {
     setCourses((prev) => [...prev, course]);
   };
@@ -106,24 +120,52 @@ export default function App() {
                   key={screen.key}
                   title={screen.label}
                   active={studentScreen === screen.key}
-                  onPress={() => setStudentScreen(screen.key)}
+                  onPress={() => {
+                    setStudentScreen(screen.key);
+                    setSelectedCourseId(null);
+                  }}
                 />
               ))}
             </View>
 
             {studentScreen === 'courses' && (
-              <StudentCoursesScreen
-                courses={courses}
-                teacherVotes={teacherVotes}
-                votedTeacherCourseIds={votedTeacherCourseIds}
-                onVoteTeacher={handleVoteTeacher}
-              />
+              selectedCourseId ? (
+                <CourseAttendanceScreen
+                  course={courses.find((c) => c.id === selectedCourseId)}
+                  record={attendance.find((a) => a.courseId === selectedCourseId)}
+                  onBack={() => setSelectedCourseId(null)}
+                />
+              ) : (
+                <StudentCoursesScreen
+                  courses={courses}
+                  teacherVotes={teacherVotes}
+                  votedTeacherCourseIds={votedTeacherCourseIds}
+                  onVoteTeacher={handleVoteTeacher}
+                  onSelectCourse={setSelectedCourseId}
+                />
+              )
             )}
             {studentScreen === 'assignments' && (
-              <StudentAssignmentsScreen assignments={assignments} courses={courses} />
+              <StudentAssignmentsScreen
+                assignments={assignments}
+                courses={courses}
+                onSubmitLink={handleSubmitLink}
+              />
             )}
             {studentScreen === 'attendance' && (
-              <AttendanceDashboardScreen attendance={attendance} courses={courses} />
+              selectedCourseId ? (
+                <CourseAttendanceScreen
+                  course={courses.find((c) => c.id === selectedCourseId)}
+                  record={attendance.find((a) => a.courseId === selectedCourseId)}
+                  onBack={() => setSelectedCourseId(null)}
+                />
+              ) : (
+                <AttendanceDashboardScreen
+                  attendance={attendance}
+                  courses={courses}
+                  onSelectCourse={setSelectedCourseId}
+                />
+              )
             )}
             {studentScreen === 'registration' && (
               <CourseRegistrationScreen
@@ -140,6 +182,7 @@ export default function App() {
             onAddAssignment={handleAddAssignment}
             onAddCourse={handleAddCourse}
             onRemoveCourse={handleRemoveCourse}
+            onEditDeadline={handleEditDeadline}
           />
         )}
       </View>

@@ -1,4 +1,4 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native';
 import CourseCard from '../components/CourseCard';
 import Badge from '../components/Badge';
 import { colors } from '../theme';
@@ -6,8 +6,9 @@ import { studentGpa } from '../data';
 
 // Read-only view of all courses the student's program offers this
 // semester, plus the per-course teacher-change vote. Data-driven: the
-// list comes straight from the courses array.
-export default function StudentCoursesScreen({ courses, teacherVotes, votedTeacherCourseIds, onVoteTeacher }) {
+// list comes straight from the courses array. Tapping a card opens its
+// attendance breakdown (onSelectCourse).
+export default function StudentCoursesScreen({ courses, teacherVotes, votedTeacherCourseIds, onVoteTeacher, onSelectCourse }) {
   return (
     <View style={styles.container}>
       <View style={styles.headingRow}>
@@ -18,12 +19,14 @@ export default function StudentCoursesScreen({ courses, teacherVotes, votedTeach
         data={courses}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <CourseCard
-            course={item}
-            teacherVotes={teacherVotes[item.id] || 0}
-            hasVotedTeacher={votedTeacherCourseIds.includes(item.id)}
-            onVoteTeacher={() => onVoteTeacher(item.id)}
-          />
+          <Pressable onPress={() => onSelectCourse(item.id)}>
+            <CourseCard
+              course={item}
+              teacherVotes={teacherVotes[item.id] || 0}
+              hasVotedTeacher={votedTeacherCourseIds.includes(item.id)}
+              onVoteTeacher={() => onVoteTeacher(item.id)}
+            />
+          </Pressable>
         )}
         ListEmptyComponent={<Text style={styles.empty}>No courses found.</Text>}
       />

@@ -67,7 +67,7 @@ export const initialAssignments = [
     id: 1,
     courseId: 'ai4009',
     title: 'Prompt Engineering Report',
-    deadline: '2026-09-28',
+    deadline: '2026-11-15',
   },
   {
     id: 2,

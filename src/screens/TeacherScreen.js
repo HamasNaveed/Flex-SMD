@@ -55,7 +55,7 @@ function validateCourse({ code, name, section, teacher, totalSeats }, courses) {
 // Teacher/admin actions for this assignment: add a new assignment, and
 // manage the course catalog (add/remove courses). This is the app's one
 // real form, with required-field and date-format validation.
-export default function TeacherScreen({ courses, assignments, onAddAssignment, onAddCourse, onRemoveCourse }) {
+export default function TeacherScreen({ courses, assignments, onAddAssignment, onAddCourse, onRemoveCourse, onEditDeadline }) {
   const [courseId, setCourseId] = useState(null);
   const [title, setTitle] = useState('');
   const [deadline, setDeadline] = useState('');
@@ -234,6 +234,7 @@ export default function TeacherScreen({ courses, assignments, onAddAssignment, o
             key={item.id}
             assignment={item}
             courseLabel={courseLabel(item.courseId)}
+            onEditDeadline={(deadline) => onEditDeadline(item.id, deadline)}
           />
         ))
       )}
